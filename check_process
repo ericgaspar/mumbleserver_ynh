@@ -2,7 +2,7 @@
 	auto_remove=1
 	; Manifest
 		domain="domain.tld"	(DOMAIN)
-		welcometext="Welcome to my mumble server"
+		welcometext="Welcome to my Mumble server"
 		registername="Root"
 	; Checks
 		pkg_linter=1
