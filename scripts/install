@@ -46,13 +46,13 @@ test ! -e "$final_path" || ynh_die "This path already contains a folder"
 ynh_script_progression --message="Storing installation settings..."
 
 # Save app settings
-ynh_app_setting_set "$app" domain          "$domain"
-ynh_app_setting_set "$app" no_sso          "true"
-ynh_app_setting_set "$app" server_password "$server_password"
-ynh_app_setting_set "$app" su_passwd       "$su_passwd"
-ynh_app_setting_set "$app" welcometext     "$welcometext"
-ynh_app_setting_set "$app" registerName    "$registerName"
-ynh_app_setting_set "$app" instance_id     "$instance_id"
+ynh_app_setting_set --app=$app --key=domain          --value=$domain
+ynh_app_setting_set --app=$app --key=no_sso          --value=true
+ynh_app_setting_set --app=$app --key=server_password --value=$server_password
+ynh_app_setting_set --app=$app --key=su_passwd       --value=$su_passwd
+ynh_app_setting_set --app=$app --key=welcometext     --value=$welcometext
+ynh_app_setting_set --app=$app --key=registerName    --value=$registerName
+ynh_app_setting_set --app=$app --key=instance_id     --value=$instance_id
 
 #=================================================
 # STANDARD MODIFICATIONS
@@ -62,10 +62,10 @@ ynh_app_setting_set "$app" instance_id     "$instance_id"
 ynh_script_progression --message="Configuring firewall..."
 
 port=$(ynh_find_port 64738)
-ynh_app_setting_set "$app" port "$port"
+ynh_app_setting_set --app=$app --key=port --value=$port
 
 # Open port in firewall
-yunohost firewall allow Both "$port"
+ynh_exec_warn_less yunohost firewall allow Both $port
 
 #=================================================
 # INSTALL DEPENDENCIES
