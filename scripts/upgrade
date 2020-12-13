@@ -178,14 +178,13 @@ murmurd -ini "$mumble_conf" -supw "$su_passwd" "$instance_id" || true
 #=================================================
 
 systemctl stop mumble-server
-systemctl disable mumble-server
+systemctl disable mumble-server --quiet
 
 #=================================================
 # ADVERTISE SERVICE IN ADMIN PANEL
 #=================================================
 
-# Add Mumble as a YunoHost service
-yunohost service add "$app" -l "/var/log/mumble-server/$app.log"
+yunohost service add $app --description="High quality voice chat software" --log="/var/log/mumble-server/$app.log"
 
 systemctl restart "$app"
 

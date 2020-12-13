@@ -35,6 +35,7 @@ su_passwd=$(ynh_string_random)
 #=================================================
 # CHECK IF THE APP CAN BE INSTALLED WITH THESE ARGS
 #=================================================
+ynh_script_progression --message="Validating installation parameters..."
 
 final_path=/var/www/$app
 test ! -e "$final_path" || ynh_die "This path already contains a folder"
@@ -42,6 +43,7 @@ test ! -e "$final_path" || ynh_die "This path already contains a folder"
 #=================================================
 # STORE SETTINGS FROM MANIFEST
 #=================================================
+ynh_script_progression --message="Storing installation settings..."
 
 # Save app settings
 ynh_app_setting_set "$app" domain          "$domain"
@@ -57,6 +59,7 @@ ynh_app_setting_set "$app" instance_id     "$instance_id"
 #=================================================
 # FIND AND OPEN A PORT
 #=================================================
+ynh_script_progression --message="Configuring firewall..."
 
 port=$(ynh_find_port 64738)
 ynh_app_setting_set "$app" port "$port"
@@ -67,9 +70,10 @@ yunohost firewall allow Both "$port"
 #=================================================
 # INSTALL DEPENDENCIES
 #=================================================
+ynh_script_progression --message="Installing dependencies..."
 
 # Install Mumble Debian package via apt
-ynh_install_app_dependencies mumble-server mailutils
+ynh_install_app_dependencies $pkg_dependencies
 
 #=================================================
 # SPECIFIC SETUP
@@ -98,6 +102,7 @@ ynh_store_file_checksum "$mumble_conf"
 #=================================================
 # SETUP SYSTEMD
 #=================================================
+ynh_script_progression --message="Configuring a systemd service..."
 
 # Create a dedicated systemd config
 ynh_add_systemd_config
@@ -130,14 +135,14 @@ murmurd -ini "$mumble_conf" -supw "$su_passwd" "$instance_id" || true
 #=================================================
 
 systemctl stop mumble-server
-systemctl disable mumble-server
+systemctl disable mumble-server --quiet
 
 #=================================================
 # ADVERTISE SERVICE IN ADMIN PANEL
 #=================================================
+ynh_script_progression --message="Integrating service in YunoHost..."
 
-# Add Mumble as a YunoHost service
-yunohost service add "$app" -l "/var/log/mumble-server/$app.log"
+yunohost service add $app --description="High quality voice chat software" --log="/var/log/mumble-server/$app.log"
 
 systemctl restart "$app"
 
@@ -161,3 +166,10 @@ Are you facing an issue, want to improve this app or say thank you?
 Please open a new issue in this project: https://github.com/YunoHost-Apps/mumbleserver_ynh
 "
 ynh_send_readme_to_admin "$message"
+
+#=================================================
+# END OF SCRIPT
+#=================================================
+
+ynh_script_progression --message="Installation of $app completed"
+
