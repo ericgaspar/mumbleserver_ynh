@@ -179,7 +179,7 @@ systemctl disable mumble-server --quiet
 #=================================================
 ynh_script_progression --message="Integrating service in YunoHost..."
 
-yunohost service add $app --description="High quality voice chat software" --log="/var/log/mumble-server/$app.log"
+yunohost service add $app --description="High quality voice chat software" --log="/var/log/mumble-server/$app.log" --needs_exposed_ports="$port"
 
 systemctl restart "$app"
 
@@ -211,4 +211,3 @@ ynh_send_readme_to_admin "$message"
 #=================================================
 
 ynh_script_progression --message="Upgrade of $app completed"
-
